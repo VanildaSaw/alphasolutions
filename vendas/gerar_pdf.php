@@ -6,6 +6,14 @@ if(!isset($_SESSION['user']) || $_SESSION['user']['tipo'] != 'admin'){
 include("../conexao.php");
 require("../fpdf/fpdf.php");
 
+function toLatin1($s) {
+    if ($s === null) return '';
+    $s = (string)$s;
+    // FPDF usa ISO-8859-1 por padrão
+    $c = @iconv('UTF-8', 'ISO-8859-1//TRANSLIT//IGNORE', $s);
+    return $c !== false ? $c : $s;
+}
+
 $sql = "SELECT vendas.id, usuarios.nome AS cliente, produtos.nome AS produto,
     produtos.preco, vendas.quantidade,
     vendas.total_venda AS total, vendas.data_venda
@@ -58,8 +66,8 @@ if($result && $result->num_rows > 0){
         $total_geral += $row['total'];
         $pdf->SetFillColor($fill ? 240 : 255, $fill ? 245 : 255, $fill ? 255 : 255);
         $pdf->Cell(12,8,$row['id'],1,0,'C',$fill);
-        $pdf->Cell(42,8,utf8_decode($row['cliente']),1,0,'L',$fill);
-        $pdf->Cell(42,8,utf8_decode($row['produto']),1,0,'L',$fill);
+        $pdf->Cell(42,8,toLatin1($row['cliente']),1,0,'L',$fill);
+        $pdf->Cell(42,8,toLatin1($row['produto']),1,0,'L',$fill);
         $pdf->Cell(25,8,number_format($row['preco'],2,',','.'),1,0,'R',$fill);
         $pdf->Cell(14,8,$row['quantidade'],1,0,'C',$fill);
         $pdf->Cell(28,8,number_format($row['total'],2,',','.'),1,0,'R',$fill);

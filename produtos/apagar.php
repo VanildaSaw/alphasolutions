@@ -7,6 +7,8 @@ include("../conexao.php");
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $nome_produto = '';
+$msg = '';
+$is_soft_delete = false;
 
 if($id > 0){
     $stmt = $conn->prepare("SELECT nome FROM produtos WHERE id=?");
@@ -15,9 +17,19 @@ if($id > 0){
     $r = $stmt->get_result()->fetch_assoc();
     $nome_produto = $r['nome'] ?? 'Produto';
 
-    $stmt2 = $conn->prepare("DELETE FROM produtos WHERE id=?");
-    $stmt2->bind_param("i", $id);
-    $stmt2->execute();
+    try {
+        $stmt2 = $conn->prepare("DELETE FROM produtos WHERE id=?");
+        $stmt2->bind_param("i", $id);
+        $stmt2->execute();
+        $msg = 'O produto foi removido permanentemente do sistema e do catálogo de clientes.';
+    } catch (mysqli_sql_exception $e) {
+        // Se o produto já tiver vendas, manter o histórico e apenas desativar do catálogo.
+        $stmt3 = $conn->prepare("UPDATE produtos SET quantidade=0 WHERE id=?");
+        $stmt3->bind_param("i", $id);
+        $stmt3->execute();
+        $is_soft_delete = true;
+        $msg = 'O produto possui vendas registadas e não pode ser apagado. Foi desativado do catálogo (estoque=0) e as vendas foram mantidas.';
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -69,9 +81,9 @@ footer{position:relative;z-index:1;margin-top:32px;font-size:12px;color:var(--mu
 <body>
 <div class="card">
   <div class="icon-wrap"><i class="bi bi-trash3"></i></div>
-  <h1>Produto Eliminado</h1>
+  <h1><?php echo $is_soft_delete ? 'Produto Desativado' : 'Produto Eliminado'; ?></h1>
   <div class="produto-nome"><?php echo htmlspecialchars($nome_produto); ?></div>
-  <p>O produto foi removido permanentemente do sistema e do catálogo de clientes.</p>
+  <p><?php echo htmlspecialchars($msg); ?></p>
   <div class="divider"></div>
   <div class="btn-row">
     <a href="listar.php" class="btn-primary"><i class="bi bi-list-ul"></i> Ver Produtos</a>
