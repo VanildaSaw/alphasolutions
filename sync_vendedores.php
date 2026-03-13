@@ -8,7 +8,7 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['tipo'] != 'admin') {
 include "conexao.php";
 
 // URL da API externa de RH
-$apiUrl = "https://hr-system-apii.onrender.com/api/employees";
+$apiUrl = "https://srh-api.onrender.com/api/vendedores/todos";
 
 $json = @file_get_contents($apiUrl);
 if ($json === false) {
