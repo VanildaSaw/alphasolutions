@@ -41,21 +41,30 @@ if (!$stmt) {
 }
 
 foreach ($data as $emp) {
-    // Montar campos locais a partir da API externa
-    $idRh   = $emp['id'] ?? null;
-    $nome   = trim(($emp['firstName'] ?? '') . ' ' . ($emp['lastName'] ?? ''));
-    $email  = $emp['email'] ?? null;
-    $cargo  = $emp['cargo'] ?? '';
+    // Campos vindos da nova API de RH
+    // Exemplo de item:
+    // {
+    //   "id":101,
+    //   "nomeCompleto":"Ana Souza",
+    //   "email":"...",
+    //   "codigo":"VEND-1",
+    //   "ativo":true,
+    //   "vendedor":true,
+    //   ...
+    // }
 
-    if (!$idRh || $nome === '') {
-        continue;
+    $codigo = $emp['codigo'] ?? null;          // Ex.: "VEND-1"
+    $nome   = $emp['nomeCompleto'] ?? '';
+    $email  = $emp['email'] ?? null;
+
+    if (!$codigo || trim($nome) === '') {
+        continue; // ignora registros incompletos
     }
 
-    // Código padrão VEND-{id}
-    $codigo = 'VEND-' . $idRh;
-
-    // Ativo apenas se cargo for Vendedor (ajuste conforme necessidade)
-    $ativo = ($cargo === 'Vendedor') ? 1 : 0;
+    // Considera ativo somente se a API marcar como vendedor e ativo
+    $isVendedor = !empty($emp['vendedor']);
+    $isAtivo    = array_key_exists('ativo', $emp) ? (bool)$emp['ativo'] : true;
+    $ativo      = ($isVendedor && $isAtivo) ? 1 : 0;
 
     $stmt->bind_param("sssi", $codigo, $nome, $email, $ativo);
     $stmt->execute();
