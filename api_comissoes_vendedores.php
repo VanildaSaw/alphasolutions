@@ -22,11 +22,10 @@ $sql = "SELECT
             ven.codigo  AS vendedor_codigo,
             ven.nome    AS vendedor_nome,
             SUM(v.comissao_valor)                 AS total_comissao,
-            SUM(v.quantidade * p.preco)           AS total_vendas,
+            SUM(v.total_venda)                    AS total_vendas,
             COUNT(v.id)                           AS total_vendas_registros
         FROM vendas v
         LEFT JOIN vendedores ven ON v.vendedor_id = ven.id
-        INNER JOIN produtos p    ON v.produto_id  = p.id
         WHERE v.vendedor_id IS NOT NULL";
 
 $params = [];

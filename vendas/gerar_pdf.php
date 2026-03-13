@@ -8,7 +8,7 @@ require("../fpdf/fpdf.php");
 
 $sql = "SELECT vendas.id, usuarios.nome AS cliente, produtos.nome AS produto,
     produtos.preco, vendas.quantidade,
-    (vendas.quantidade * produtos.preco) AS total, vendas.data_venda
+    vendas.total_venda AS total, vendas.data_venda
 FROM vendas
 INNER JOIN usuarios ON vendas.cliente_id = usuarios.id
 INNER JOIN produtos ON vendas.produto_id = produtos.id

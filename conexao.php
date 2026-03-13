@@ -1,4 +1,9 @@
 <?php
+$tz = @date_default_timezone_get();
+if ($tz !== 'Africa/Maputo') {
+    date_default_timezone_set('Africa/Maputo');
+}
+
 $host = getenv('DB_HOST');
 $user = getenv('DB_USER');
 $pass = getenv('DB_PASS');

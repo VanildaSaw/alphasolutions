@@ -91,6 +91,7 @@ CREATE TABLE IF NOT EXISTS vendas (
   produto_id INT UNSIGNED NOT NULL,
   quantidade INT UNSIGNED NOT NULL,
   data_venda DATETIME NOT NULL,
+  total_venda DECIMAL(10,2) NOT NULL DEFAULT 0.00,
   vendedor_id INT UNSIGNED NULL,
   vendedor_codigo VARCHAR(20) DEFAULT NULL,
   comissao_percentual DECIMAL(5,2) NOT NULL DEFAULT 5.00,

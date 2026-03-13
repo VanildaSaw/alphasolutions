@@ -6,7 +6,7 @@ if(!isset($_SESSION['user']) || $_SESSION['user']['tipo'] != 'admin'){
 include("../conexao.php");
 $sql = "SELECT vendas.id, usuarios.nome AS cliente, usuarios.email,
     produtos.nome AS produto, produtos.preco, vendas.quantidade,
-    (vendas.quantidade * produtos.preco) AS total, vendas.data_venda
+    vendas.total_venda AS total, vendas.data_venda
 FROM vendas
 INNER JOIN usuarios ON vendas.cliente_id = usuarios.id
 INNER JOIN produtos ON vendas.produto_id = produtos.id

@@ -55,14 +55,15 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             $comissao_percentual = 5.0;
             $comissao_valor = $total * ($comissao_percentual / 100);
 
-            $stmt2 = $conn->prepare("INSERT INTO vendas (cliente_id, produto_id, quantidade, data_venda, vendedor_id, vendedor_codigo, comissao_percentual, comissao_valor) VALUES (?,?,?,?,?,?,?,?)");
+            $stmt2 = $conn->prepare("INSERT INTO vendas (cliente_id, produto_id, quantidade, data_venda, total_venda, vendedor_id, vendedor_codigo, comissao_percentual, comissao_valor) VALUES (?,?,?,?,?,?,?,?,?)");
             $data_venda = date('Y-m-d H:i:s');
             $stmt2->bind_param(
-                "iiisisdd",
+                "iiisdisdd",
                 $cliente_id,            // i
                 $produto_id,            // i
                 $quantidade,            // i
                 $data_venda,            // s
+                $total,                 // d
                 $vendedor_id,           // i
                 $vendedor_codigo_db,    // s
                 $comissao_percentual,   // d

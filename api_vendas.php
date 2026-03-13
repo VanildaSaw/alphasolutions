@@ -21,7 +21,7 @@ $sql = "SELECT
             v.id,
             v.data_venda,
             v.quantidade,
-            (v.quantidade * p.preco) AS total_venda,
+            v.total_venda AS total_venda,
             u.id   AS cliente_id,
             u.nome AS cliente_nome,
             p.id   AS produto_id,
